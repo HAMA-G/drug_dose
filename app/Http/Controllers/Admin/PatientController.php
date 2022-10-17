@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use App\Patient;
+
 class PatientController extends Controller
 {
     public function add()
@@ -12,9 +14,18 @@ class PatientController extends Controller
         return view('admin.patient.create');
     }
     
-    public function create()
+    public function create(Request $request)
     {
-        return redirect('admin/patient');
+        $this->validate($request, Patient::$rules);
+        
+        $patient = new Patient;
+        $form = $request->all();
+        
+        unset($form['_token']);
+        
+        $patient->fill($form)->save();
+
+        return redirect('admin/patient/create');
     }
     
     public function edit()
