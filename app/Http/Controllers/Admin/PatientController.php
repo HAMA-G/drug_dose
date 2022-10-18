@@ -28,13 +28,44 @@ class PatientController extends Controller
         return redirect('admin/patient/create');
     }
     
-    public function edit()
+    public function index(Request $request)
     {
-        return view('admin.patient.edit');
+        $cond_name = $request->cond_name;
+        if ($cond_name != "") {
+            $posts = Patient::where('name', $cond_name)->get();
+        } else {
+            $posts = Patient::all();
+        }
+        return view('admin.patient.index', ['posts' => $posts, 'cond_name' => $cond_name]);
     }
     
-    public function update()
+    public function edit(Request $request)
     {
-        return redirect('admin/patient/edit');
+        $patient = Patient::find($request->id);
+        if(empty($patient)) {
+            abort(404);
+        }
+        return view('admin.patient.edit', ['patient_form' => $patient]);
+    }
+    
+    public function update(Request $request)
+    {
+        $this->validate($request, Patient::$rules);
+        $patient = Patient::find($request->id);
+        $patient_form = $request->all();
+        
+        unset($patient_form['_token']);
+        
+        $patient->fill($patient_form)->save();
+        
+        return redirect('admin/patient/');
+    }
+    
+    public function delete(Request $request)
+    {
+        $patient = Patient::find($request->id);
+        $patient->delete();
+        
+        return redirect('admin/patient/');
     }
 }

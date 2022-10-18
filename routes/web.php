@@ -18,6 +18,10 @@ Route::get('/', function () {
 Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
     Route::get('patient/create', 'Admin\PatientController@add');
     Route::post('patient/create', 'Admin\PatientController@create');
+    Route::get('patient', 'Admin\PatientController@index');
+    Route::get('patient/edit', 'Admin\PatientController@edit');
+    Route::post('patient/edit', 'Admin\PatientController@update');
+    Route::get('patient/delete', 'Admin\PatientController@delete');
 });
 
 Auth::routes();
